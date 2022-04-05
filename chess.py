@@ -13,11 +13,17 @@ class Board:
         if piece == None:
             return '  '
         color = piece.get_color()
-        c = 'w' if color == WHITE else 'b'
-        return c + piece.char()
+        char = 'w' if color == WHITE else 'b'
+        return char + piece.char()
     def current_player_color(self):
             return self.color
     def move_piece(self, row, col, row1, col1):
+        global white_can_castling
+        global black_can_castling
+        global right_wB_empty
+        global right_wN_empty
+        global right_bB_empty
+        global right_bN_empty
         if not correct_coords(row, col) or not correct_coords(row1, col1):
             return False
         if row == row1 and col == col1:
@@ -35,6 +41,41 @@ class Board:
                 return False
         else:
             return False
+        if (row == 0 and col == 7) or (row == 0 and col == 4):
+            white_can_castling = False
+        elif (row == 7 and col == 7) or (row == 7 and col == 4):
+            black_can_castling = False
+        elif row == 0 and col == 5:
+            right_wB_empty = True
+        elif row == 0 and col == 6:
+            right_wN_empty = True
+        elif row == 7 and col == 5:
+            right_bB_empty = True
+        elif row == 7 and col == 6:
+            right_bN_empty = True
+        if (row1 == 0 and col1 == 7) or (row1 == 0 and col1 == 4):
+            white_can_castling = False
+        elif (row1 == 7 and col1 == 7) or (row1 == 7 and col1 == 4):
+            black_can_castling = False
+        elif row1 == 0 and col1 == 5:
+            right_wB_empty = False
+        elif row1 == 0 and col1 == 6:
+            right_wN_empty = False
+        elif row1 == 7 and col1 == 5:
+            right_bB_empty = False
+        elif row1 == 7 and col1 == 6:
+            right_bN_empty = False
+        if piece.char() == 'K':
+            if self.color == WHITE:
+                if row == 0 and col == 4 and row1 == 0 and col1 == 6:
+                    piece1 = self.field[0][7]
+                    self.field[0][7] = None
+                    self.field[0][5] = piece1
+            else:
+                if row == 7 and col == 4 and row1 == 7 and col1 == 6:
+                    piece1 = self.field[7][7]
+                    self.field[7][7] = None
+                    self.field[7][5] = piece1
         self.field[row][col] = None
         self.field[row1][col1] = piece
         self.color = opponent(self.color)
@@ -74,6 +115,21 @@ class King(Piece):
     def char(self):
         return 'K'
     def can_move(self, board, row, col, row1, col1):
+        global white_can_castling
+        global black_can_castling
+        global right_wB_empty
+        global right_wN_empty
+        global right_bB_empty
+        global right_bN_empty
+        color = self.color
+        if color == WHITE:
+            if white_can_castling:
+                if row1 == 0 and col1 == 6:
+                    return right_wB_empty and right_wN_empty
+        else:
+            if black_can_castling:
+                if row1 == 7 and col1 == 6:
+                    return right_bB_empty and right_bN_empty
         if abs(col - col1) > 1 or abs(row - row1) > 1:
             return False
         return True
@@ -157,6 +213,25 @@ def correct_coords(row, col):
         return True
     else:
         return False
+
+
+def check_end_game(board):
+    wK_on_the_board = False
+    bK_on_the_board = False
+    for row in board.field:
+        for piece in row:
+            if piece is not None:
+                if piece.char() == 'K':
+                    color = piece.get_color()
+                    if color == WHITE:
+                        wK_on_the_board = True
+                    else:
+                        bK_on_the_board = True
+    if not wK_on_the_board:
+        return [True, "Black won"]
+    if not bK_on_the_board:
+        return [True, "White won"]
+    return [False, None]
     
 
 def print_board(board):
@@ -193,7 +268,19 @@ def main():
             print("Successfully")
         else:
             print("The coordinates are incorrect. Try again")
+        list_check = check_end_game(board)
+        game_ended = list_check[0]
+        message = list_check[1]
+        if game_ended:
+            print(message)
+            break
             
+white_can_castling = True
+black_can_castling = True
+right_wB_empty = False
+right_wN_empty = False
+right_bB_empty = False
+right_bN_empty = False
 WHITE = 0
 BLACK = 1
 main()
