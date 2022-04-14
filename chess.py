@@ -202,17 +202,13 @@ class Knight(Piece):
     
 
 def opponent(color):
-    if color == WHITE:
-        return BLACK
-    else:
-        return WHITE
+    return WHITE if color == BLACK else BLACK
     
     
 def correct_coords(row, col):
     if 0 <= row <= 7 and 0 <= col<= 7:
         return True
-    else:
-        return False
+    return False
 
 
 def check_end_game(board):
@@ -235,21 +231,23 @@ def check_end_game(board):
     
 
 def print_board(board):
+    accordance = {0: 'a', 1: 'b', 2: 'c', 3: 'd', 4: 'e', 5: 'f', 6: 'g', 7: 'h'}
     print("    +----+----+----+----+----+----+----+----+")
     for row in range(7,-1,-1):
-        print(" ", row, end = " ")
+        print(" ", row + 1, end = " ")
         for col in range(8):
             print("|", board.cell(row, col), end = " ")
         print("|")
         print("    +----+----+----+----+----+----+----+----+")
     print(end = "      ")
     for col in range(8):
-        print(col, end = "    ")
+        print(accordance[col], end = "    ")
     print()
     
 
 def main():
     board = Board()
+    accordance = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7}
     while True:
         print_board(board)
         print("Commands")
@@ -263,7 +261,7 @@ def main():
         if command == "exit":
             break
         move_type, row, col, row1, col1 = command.split()
-        row, col, row1, col1 = int(row), int(col), int(row1), int(col1)
+        row, col, row1, col1 = int(row) - 1, accordance[col], int(row1) - 1, accordance[col1]
         if board.move_piece(row, col, row1, col1):
             print("Successfully")
         else:
