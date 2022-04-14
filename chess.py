@@ -88,29 +88,32 @@ class Piece:
         self.color = color
     def get_color(self):
         return self.color
-    
+
+
 class Pawn(Piece):
+    direction = 0
+
+    def __init__(self, color):
+        super().__init__(color)
+        self.direction = 1 if (self.color == WHITE) else - 1
     def char(self):
         return 'P'
     def can_move(self, board, row, col, row1, col1):
         if col != col1:
             return False
         if self.color == WHITE:
-            direction = 1
             start_row = 1
         else:
-            direction = -1
             start_row = 6
-        if row + direction == row1:
+        if row + self.direction == row1:
             return True
-        if (row == start_row and row + 2 * direction == row1 and board.field[row + direction][col] is None):
+        if (row == start_row and row + 2 * self.direction == row1 and board.field[row + self.direction][col] is None):
             return True
         else:
             return False
     def can_attack(self, board, row, col, row1, col1):
-        direction = 1 if (self.color == WHITE) else -1
-        return (row + direction == row1 and (col + 1 == col1 or col - 1 == col1))
-                
+        return (row + self.direction == row1 and (col + 1 == col1 or col - 1 == col1))
+
 
 class King(Piece):
     def char(self):
