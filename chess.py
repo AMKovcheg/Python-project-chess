@@ -228,26 +228,28 @@ def check_end_game(board):
     return [False, None]
     
 
-def print_board(board):
-    accordance = {0: 'a', 1: 'b', 2: 'c', 3: 'd', 4: 'e', 5: 'f', 6: 'g', 7: 'h'}
-    print("    +----+----+----+----+----+----+----+----+")
-    for row in range(7,-1,-1):
-        print(" ", row + 1, end = " ")
-        for col in range(8):
-            print("|", board.cell(row, col), end = " ")
-        print("|")
+class Interface:
+    def print_board(self, board):
+        accordance = {0: 'a', 1: 'b', 2: 'c', 3: 'd', 4: 'e', 5: 'f', 6: 'g', 7: 'h'}
         print("    +----+----+----+----+----+----+----+----+")
-    print(end = "      ")
-    for col in range(8):
-        print(accordance[col], end = "    ")
-    print()
+        for row in range(7,-1,-1):
+            print(" ", row + 1, end = " ")
+            for col in range(8):
+                print("|", board.cell(row, col), end = " ")
+            print("|")
+            print("    +----+----+----+----+----+----+----+----+")
+        print(end = "      ")
+        for col in range(8):
+            print(accordance[col], end = "    ")
+        print()
     
 
 def main():
     board = Board()
+    interface = Interface()
     accordance = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7}
     while True:
-        print_board(board)
+        interface.print_board(board)
         print("Commands")
         print("    exit")
         print("    move <row> <col> <target row> <target col>")
