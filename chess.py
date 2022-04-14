@@ -283,4 +283,6 @@ right_bB_empty = False
 right_bN_empty = False
 WHITE = 0
 BLACK = 1
-main()
+if __name__ == "__main__":
+    main()
+
