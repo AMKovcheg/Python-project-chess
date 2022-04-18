@@ -175,13 +175,17 @@ class Bishop(Piece):
     
 
 class Queen(Piece):
+    rook = Rook(None)
+    bishop = Bishop(None)
+
+    def __init__(self, color):
+        super().__init__(color)
+        self.rook = Rook(color)
+        self.bishop = Bishop(color)
     def char(self):
         return 'Q'
     def can_move(self, board, row, col, row1, col1):
-        color = self.get_color
-        rook = Rook(color)
-        bishop = Bishop(color)
-        if rook.can_move(board, row, col, row1, col1) or bishop.can_move(board, row, col, row1, col1):
+        if self.rook.can_move(board, row, col, row1, col1) or self.bishop.can_move(board, row, col, row1, col1):
             return True
         return False
     def can_attack(self, board, row, col, row1, col1):
